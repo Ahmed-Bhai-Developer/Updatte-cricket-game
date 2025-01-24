@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRICKET</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background-image: url(https://colibriwp.com/blog/wp-content/uploads/2019/06/pawel-czerwinski-vI5XwPbGvmY-unsplash.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+        button{
+            border: none;
+            background-color:white;
+            color: #83C3CC;
+            font-weight: 500;
+            font-size: 1.2rem;
+            border-radius: 100px;
+            padding: 1vmin;
+        }
+        h3{
+            font-size: 1.4rem;
+            color: #432818;
+            font-weight: 900;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Bat Ball Stump Game</h1>
+    <!-- first button -->
+    <button onclick="
+         let computerchoice = generateComputerChoice();
+            const compchoicemsg = `Computer have chossen ${computerchoice}`;
+        var resultmsg= getResult('Bat', computerchoice);
+        showResult('Bat',compchoicemsg,resultmsg);
+            ">Bat
+    </button>
+
+    <!-- secend -->
+    <button onclick="
+            computerchoice = generateComputerChoice();
+             compchoicemsg = `Computer have chossen ${computerchoice}`;
+            resultmsg= getResult('Ball', computerchoice);
+            showResult('Ball',compchoicemsg,resultmsg);
+            ">Ball
+    </button>
+
+    <!-- third button -->
+    <button onclick="
+           computerchoice = generateComputerChoice();
+            compchoicemsg = `Computer have chossen ${computerchoice}`;
+            resultmsg= getResult('Stump', computerchoice);
+            showResult('Stump',compchoicemsg,resultmsg);
+           ">Stump
+    </button>
+    <button onclick="
+    localStorage.clear();
+    scorefunc();
+
+    ">Reset Game</button>
+    <h3 id="user-move"></h3>
+    <h3 id="computer-move"></h3>
+    <h3 id="result"></h3>
+    <h3 id="score"></h3>
+    <!-- javascript -->
+    <script>
+        let scoreStr = localStorage.getItem('score');
+        let score;
+        scorefunc(scoreStr);
+        function scorefunc(scoreStr) {
+
+            score = scoreStr ? JSON.parse(scoreStr) : {
+                win: 0,
+                lost: 0,
+                tie: 0,
+            }
+            score.displayScore = function () {
+                return `Score:${score.win}, lost${score.lost}, tie${score.tie}
+            `;
+            }
+            showResult();
+        }
+
+
+
+
+        function generateComputerChoice() {
+            let randomnumber = Math.random() * 3;
+            let computerchoice;
+            if (randomnumber > 0 && randomnumber <= 1) {
+                return 'Bat';
+            } else if (randomnumber > 1 && randomnumber <= 2) {
+                return 'Ball';
+            } else {
+                return 'Stump';
+            }
+        }
+        function getResult(userMove, computerMove) {
+
+            if (userMove === 'Bat') {
+                if (computerMove === 'Ball') {
+                    score.win++;
+                    return 'User won';
+                } else if (computerMove === 'Bat') {
+                    score.tie++;
+                    return 'Its a tie';
+                } else {
+                    score.lost++;
+                    return 'User lost and computer Won the game';
+                }
+
+            } else if (userMove === 'Ball') {
+                if (computerMove === 'Ball') {
+                    score.tie++;
+                    return 'Its Tie';
+                } else if (computerMove === 'Bat') {
+                    score.lost++;
+                    return 'Computer Won';
+                } else {
+                    score.win++;
+                    return 'User Won the game';
+                }
+
+            } else {
+
+                if (computerMove === 'Ball') {
+                    score.lost++;
+                    return 'Computer has Won';
+                } else if (computerMove === 'Bat') {
+                    score.win++;
+                    return 'User has Won';
+                } else {
+                    score.tie++;
+                    return 'Its a tie';
+                }
+            }
+
+        }
+       
+       
+        function showResult(userMove, computerMove, result) {
+            localStorage.setItem('score', JSON.stringify(score))
+            console.log(score)
+            document.querySelector('#user-move').innerText = userMove ? `You have choosen ${userMove}`:'';
+            document.querySelector('#computer-move').innerText =computerMove ? computerMove : '';
+            document.querySelector('#result').innerText = result||'';
+            document.querySelector('#score').innerText = score.displayScore()
+
+            
+        }
+    </script>
+</body>
+
+</html>
